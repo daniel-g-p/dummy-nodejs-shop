@@ -1,7 +1,7 @@
 module.exports = (req, res, next) => {
-    const method = req.query._method;
-    if (method) {
-        req.method = method;
+    const { _method } = req.query;
+    if (_method) {
+        req.method = _method;
     }
     next();
 }
