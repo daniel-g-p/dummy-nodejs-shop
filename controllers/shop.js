@@ -24,13 +24,27 @@ exports.getProduct = (req, res, next) => {
 exports.addProductToCart = (req, res, next) => {
     const { productID } = req.body;
     Cart.addProduct(productID);
-    res.redirect("/shop/cart");
+    res.redirect("/cart");
 }
 
 exports.getCart = (req, res, next) => {
     const cart = Cart.fetchCart();
-    res.render('shop/cart', { cart, path: '/cart', pageTitle: 'Your Cart' });
+    const productsData = Product.fetchAll();
+    const cartTotal = cart.reduce((total, item) => {
+        const product = productsData.find(product => product.id === item.productID);
+        ["title", "imageUrl", "price", "description"].forEach(field => {
+            item[field] = product[field];
+        })
+        return total + product.price * item.quantity;
+    }, 0);
+    res.render('shop/cart', { cart, total: cartTotal, path: '/cart', pageTitle: 'Your Cart' });
 };
+
+exports.removeItemFromCart = (req, res, next) => {
+    const { productID } = req.body;
+    Cart.removeProduct(productID);
+    res.redirect("/cart");
+}
 
 exports.getOrders = (req, res, next) => {
     res.render('shop/orders', { path: '/orders', pageTitle: 'Your Orders' });

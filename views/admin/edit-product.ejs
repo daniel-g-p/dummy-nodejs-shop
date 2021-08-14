@@ -1,0 +1,34 @@
+<%- include('../includes/head.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+
+            <main>
+                <form class="product-form" action="/admin/edit-product" method="POST">
+                    <div class="form-control">
+                        <label for="title">Title</label>
+                        <input type="text" name="title" id="title" value="<%= product.title ? product.title : null %>">
+                    </div>
+                    <div class="form-control">
+                        <label for="imageUrl">Image URL</label>
+                        <input type="text" name="imageUrl" id="imageUrl"
+                            value="<%= product.imageUrl ? product.imageUrl : null %>">
+                    </div>
+                    <div class="form-control">
+                        <label for="price">Price</label>
+                        <input type="number" name="price" id="price" step="0.01"
+                            value="<%= product.price ? product.price : null %>">
+                    </div>
+                    <div class="form-control">
+                        <label for="description">Description</label>
+                        <textarea name="description" id="description"
+                            rows="5"><%= product.description ? product.description : null %></textarea>
+                    </div>
+                    <form action="/admin/edit-product" method="POST">
+                        <input type="hidden" name="productID" value="<%= product.id %>">
+                        <button class="btn" type="submit">Edit Product</button>
+                    </form>
+                </form>
+            </main>
+            <%- include('../includes/end.ejs') %>

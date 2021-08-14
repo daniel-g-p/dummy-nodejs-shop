@@ -18,7 +18,13 @@ module.exports = class Cart {
         }
         fs.writeFileSync(database, JSON.stringify(cart));
     }
+    static removeProduct(productID) {
+        const cart = this.fetchCart();
+        const productIndex = cart.findIndex(item => item.productID === productID);
+        cart.splice(productIndex, 1);
+        fs.writeFileSync(database, JSON.stringify(cart));
+    }
     static fetchCart() {
         return JSON.parse(fs.readFileSync(database));
     }
-}
+};

@@ -27,11 +27,33 @@ module.exports = class Product {
         products.push(this);
         fs.writeFileSync(database, JSON.stringify(products));
     }
+    static update(productData) {
+        const { products, productIndex } = Product.findByID(productData.id);
+        products.splice(productIndex, 1, productData);
+        fs.writeFileSync(database, JSON.stringify(products));
+        return `Product ${productData.id} updated`;
+    }
+    static delete(productID) {
+        const { products, productIndex } = Product.findIndexByID(productID);
+        products.splice(productIndex, 1);
+        fs.writeFileSync(database, JSON.stringify(products));
+        return `Product ${productID} deleted`;
+    }
     static fetchAll() {
         return JSON.parse(fs.readFileSync(database));
     }
     static findByID(id) {
         const data = Product.fetchAll();
-        return data.find(item => item.id === id);
+        return {
+            products: data,
+            product: data.find(item => item.id === id),
+        }
+    }
+    static findIndexByID(id) {
+        const data = Product.fetchAll();
+        return {
+            products: data,
+            productIndex: data.findIndex(item => item.id === id)
+        };
     }
 };
