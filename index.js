@@ -1,16 +1,18 @@
 const express = require('express');
 const path = require('path');
-const methodOverride = require("./util/method-override");
 
+const connectToDatabase = require("./data/database");
+const methodOverride = require("./util/method-override");
 const errorController = require('./controllers/error');
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+
+connectToDatabase();
 
 const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
-
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
