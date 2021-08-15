@@ -1,20 +1,20 @@
 const Product = require('../models/Product');
 
 exports.getAddProduct = (req, res, next) => {
-    res.render('admin/add-product', { pageTitle: 'Add Product', path: '/admin/add-product' });
+    return res.render('admin/add-product', { pageTitle: 'Add Product', path: '/admin/add-product' });
 };
 
-exports.postAddProduct = (req, res, next) => {
+exports.postAddProduct = async(req, res, next) => {
     const { title, imageUrl, price, description } = req.body;
     const product = new Product(title, imageUrl, description, Number(price));
-    product.save();
-    res.redirect('/');
+    await product.add();
+    return res.redirect('/');
 };
 
-exports.getEditProductForm = (req, res, next) => {
-    const data = req.query;
-    const { product } = Product.findByID(data.productID);
-    res.render("admin/edit-product", { product, pageTitle: "Edit Product", path: "/admin/edit-product" });
+exports.getEditProductForm = async(req, res, next) => {
+    const { productID } = req.query;
+    const product = await Product.findById(productID);
+    return res.render("admin/edit-product", { product, pageTitle: "Edit Product", path: "/admin/edit-product" });
 }
 
 exports.editProduct = (req, res, next) => {
@@ -29,14 +29,14 @@ exports.editProduct = (req, res, next) => {
     res.redirect("/admin/products");
 }
 
-exports.deleteProduct = (req, res, next) => {
-    const { productID } = req.body;
-    const message = Product.delete(productID);
-    console.log(message);
-    res.redirect("/admin/products");
+exports.deleteProduct = async(req, res, next) => {
+    const { productID } = req.query;
+    const deletedId = await Product.removeById(productID);
+    console.log(`Product ${deletedId} has been deleted`);
+    return res.redirect("/admin/products");
 }
 
-exports.getProducts = (req, res, next) => {
-    const products = Product.fetchAll();
-    res.render('admin/products', { products, pageTitle: 'Admin Products', path: '/admin/products' });
+exports.getProducts = async(req, res, next) => {
+    const products = await Product.getAll();
+    return res.render('admin/products', { products, pageTitle: 'Admin Products', path: '/admin/products' });
 };

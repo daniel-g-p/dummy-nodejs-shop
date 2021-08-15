@@ -1,19 +1,20 @@
 const express = require('express');
 
+const tryCatch = require("../util/tryCatchWrapper");
 const adminController = require('../controllers/admin');
 
 const router = express.Router();
 
 router.route('/add-product')
-    .get(adminController.getAddProduct)
-    .post(adminController.postAddProduct)
+    .get(tryCatch(adminController.getAddProduct))
+    .post(tryCatch(adminController.postAddProduct));
 
 router.route("/edit-product")
-    .get(adminController.getEditProductForm)
-    .post(adminController.editProduct);
+    .get(tryCatch(adminController.getEditProductForm))
+    .post(tryCatch(adminController.editProduct));
 
-router.post("/delete-product", adminController.deleteProduct);
+router.post("/delete-product", tryCatch(adminController.deleteProduct));
 
-router.get('/products', adminController.getProducts);
+router.get('/products', tryCatch(adminController.getProducts));
 
 module.exports = router;

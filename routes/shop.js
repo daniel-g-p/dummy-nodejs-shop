@@ -1,22 +1,23 @@
 const express = require('express');
 
+const tryCatch = require("../util/tryCatchWrapper");
 const shopController = require('../controllers/shop');
 
 const router = express.Router();
 
-router.get('/', shopController.getIndex);
+router.get('/', tryCatch(shopController.getIndex));
 
-router.get('/products', shopController.getProducts);
+router.get('/products', tryCatch(shopController.getProducts));
 
-router.get("/products/:productID", shopController.getProduct)
+router.get("/products/:productID", tryCatch(shopController.getProduct));
 
-router.route('/cart')
-    .get(shopController.getCart)
-    .post(shopController.addProductToCart)
-    .delete(shopController.removeItemFromCart)
+// router.route('/cart')
+//     .get(shopController.getCart)
+//     .post(shopController.addProductToCart)
+//     .delete(shopController.removeItemFromCart)
 
-router.get('/orders', shopController.getOrders);
+// router.get('/orders', shopController.getOrders);
 
-router.get('/checkout', shopController.getCheckout);
+// router.get('/checkout', shopController.getCheckout);
 
 module.exports = router;
