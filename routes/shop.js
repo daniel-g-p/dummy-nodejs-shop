@@ -11,10 +11,10 @@ router.get('/products', tryCatch(shopController.getProducts));
 
 router.get("/products/:productID", tryCatch(shopController.getProduct));
 
-// router.route('/cart')
-//     .get(shopController.getCart)
-//     .post(shopController.addProductToCart)
-//     .delete(shopController.removeItemFromCart)
+router.route('/cart')
+    .get(tryCatch(shopController.getCart))
+    .post(tryCatch(shopController.addProductToCart))
+    .delete(shopController.removeItemFromCart)
 
 // router.get('/orders', shopController.getOrders);
 

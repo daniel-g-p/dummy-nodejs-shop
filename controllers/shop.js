@@ -1,5 +1,6 @@
 const Product = require('../models/Product');
-const Cart = require("../models/Cart");
+const User = require("../models/User");
+// const Cart = require("../models/Cart");
 
 exports.getIndex = async(req, res, next) => {
     const products = await Product.getAll();
@@ -14,31 +15,31 @@ exports.getProducts = async(req, res, next) => {
 exports.getProduct = async(req, res, next) => {
     const { productID } = req.params;
     const product = await Product.findById(productID);
-    res.render("shop/product-detail", { product: product, pageTitle: product.title, path: `Product ${product._id}` });
+    res.render("shop/product-detail", { product, pageTitle: product.title, path: `Product ${product._id}` });
 }
 
-exports.addProductToCart = (req, res, next) => {
+exports.addProductToCart = async(req, res, next) => {
     const { productID } = req.body;
-    Cart.addProduct(productID);
+    await User.editItemInCart(req.userId, productID);
     res.redirect("/cart");
 }
 
-exports.getCart = (req, res, next) => {
-    const cart = Cart.fetchCart();
-    const productsData = Product.fetchAll();
-    const cartTotal = cart.reduce((total, item) => {
-        const product = productsData.find(product => product.id === item.productID);
-        ["title", "imageUrl", "price", "description"].forEach(field => {
+exports.getCart = async(req, res, next) => {
+    const { cart } = await User.findById(req.userId, "cart");
+    let cartTotal = 0;
+    for (let item of cart) {
+        const product = await Product.findById(item.id);
+        ["title", "imageUrl", "description", "price"].forEach(field => {
             item[field] = product[field];
-        })
-        return total + product.price * item.quantity;
-    }, 0);
-    res.render('shop/cart', { cart, total: cartTotal, path: '/cart', pageTitle: 'Your Cart' });
+        });
+        cartTotal += Number(item.price) * item.quantity;
+    };
+    res.render('shop/cart', { cart, cartTotal, path: '/cart', pageTitle: 'Your Cart' });
 };
 
-exports.removeItemFromCart = (req, res, next) => {
+exports.removeItemFromCart = async(req, res, next) => {
     const { productID } = req.body;
-    Cart.removeProduct(productID);
+    await User.editItemInCart(req.userId, productID, "remove");
     res.redirect("/cart");
 }
 
