@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const User = require("../models/User");
 
 exports.getAddProduct = (req, res, next) => {
     return res.render('admin/add-product', { pageTitle: 'Add Product', path: '/admin/add-product' });
@@ -25,7 +26,14 @@ exports.editProduct = async(req, res, next) => {
 exports.deleteProduct = async(req, res, next) => {
     const { productID } = req.query;
     const deletedId = await Product.removeById(productID);
-    console.log(`Product ${deletedId} has been deleted`);
+    const users = await User.getAll("cart");
+    users.forEach(user => {
+        user.cart.forEach(item => {
+            if (item.id === deletedId) {
+                User.editItemInCart(user._id.toString(), deletedId, "remove");
+            };
+        });
+    });
     return res.redirect("/admin/products");
 }
 

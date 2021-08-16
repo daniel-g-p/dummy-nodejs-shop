@@ -57,4 +57,16 @@ module.exports = class User {
             throw error
         }
     }
+    static async getAll(...fields) {
+        try {
+            const db = accessDatabase();
+            const options = { projection: {} };
+            fields.forEach(field => {
+                options.projection[field] = 1;
+            });
+            return await db.collection("users").find({}, options).toArray();
+        } catch (error) {
+            throw error;
+        }
+    }
 }

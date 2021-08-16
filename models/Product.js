@@ -40,7 +40,7 @@ module.exports = class Product {
         try {
             const db = accessDatabase();
             const product = await db.collection("products").findOneAndDelete({ _id: new ObjectId(id) });
-            return product.value._id;
+            return product.value._id.toString();
         } catch (error) {
             throw error;
         }

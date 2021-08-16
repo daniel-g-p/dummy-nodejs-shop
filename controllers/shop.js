@@ -26,15 +26,19 @@ exports.addProductToCart = async(req, res, next) => {
 
 exports.getCart = async(req, res, next) => {
     const { cart } = await User.findById(req.userId, "cart");
+    const populatedCart = [];
     let cartTotal = 0;
     for (let item of cart) {
         const product = await Product.findById(item.id);
-        ["title", "imageUrl", "description", "price"].forEach(field => {
-            item[field] = product[field];
-        });
-        cartTotal += Number(item.price) * item.quantity;
+        if (product) {
+            ["title", "imageUrl", "description", "price"].forEach(field => {
+                item[field] = product[field];
+            });
+            populatedCart.push(item);
+            cartTotal += Number(item.price) * item.quantity;
+        }
     };
-    res.render('shop/cart', { cart, cartTotal, path: '/cart', pageTitle: 'Your Cart' });
+    res.render('shop/cart', { cart: populatedCart, cartTotal, path: '/cart', pageTitle: 'Your Cart' });
 };
 
 exports.removeItemFromCart = async(req, res, next) => {
