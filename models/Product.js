@@ -8,15 +8,21 @@ module.exports = class Product {
         this.description = description;
         this.price = price;
     }
-    async add() {
-        const db = accessDatabase();
-        const product = await db.collection("products").insertOne(this);
-        return product.insertedId;
+    async save(id) {
+        try {
+            const db = accessDatabase();
+            const filter = { _id: new ObjectId(id) };
+            const product = { $set: this };
+            const options = { upsert: true };
+            return await db.collection("products").updateOne(filter, product, options);
+        } catch (error) {
+            throw error;
+        }
     }
     static async findById(id) {
         try {
             const db = accessDatabase();
-            return await db.collection("products").find({ _id: new ObjectId(id) }).next();
+            return await db.collection("products").findOne({ _id: new ObjectId(id) });
         } catch (error) {
             throw error;
         }
@@ -39,57 +45,3 @@ module.exports = class Product {
         }
     }
 }
-
-// module.exports = class Product {
-//     constructor(title, imageUrl, description, price) {
-//         this.id = this.setID();
-//         this.title = title;
-//         this.imageUrl = imageUrl;
-//         this.description = description;
-//         this.price = price;
-//     }
-//     setID() {
-//         let id = "";
-//         for (let i = 1; i <= 20; i++) {
-//             id += Math.floor(Math.random() * 10);
-//             if (i % 4 === 0 && i !== 20) {
-//                 id += "-";
-//             }
-//         }
-//         return id;
-//     }
-//     save() {
-//         let products = Product.fetchAll();
-//         products.push(this);
-//         fs.writeFileSync(database, JSON.stringify(products));
-//     }
-//     static update(productData) {
-//         const { products, productIndex } = Product.findByID(productData.id);
-//         products.splice(productIndex, 1, productData);
-//         fs.writeFileSync(database, JSON.stringify(products));
-//         return `Product ${productData.id} updated`;
-//     }
-//     static delete(productID) {
-//         const { products, productIndex } = Product.findIndexByID(productID);
-//         products.splice(productIndex, 1);
-//         fs.writeFileSync(database, JSON.stringify(products));
-//         return `Product ${productID} deleted`;
-//     }
-//     static fetchAll() {
-//         return JSON.parse(fs.readFileSync(database));
-//     }
-//     static findByID(id) {
-//         const data = Product.fetchAll();
-//         return {
-//             products: data,
-//             product: data.find(item => item.id === id),
-//         }
-//     }
-//     static findIndexByID(id) {
-//         const data = Product.fetchAll();
-//         return {
-//             products: data,
-//             productIndex: data.findIndex(item => item.id === id)
-//         };
-//     }
-// };

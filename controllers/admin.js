@@ -6,8 +6,7 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = async(req, res, next) => {
     const { title, imageUrl, price, description } = req.body;
-    const product = new Product(title, imageUrl, description, Number(price));
-    await product.add();
+    await new Product(title, imageUrl, description, Number(price)).save();
     return res.redirect('/');
 };
 
@@ -17,16 +16,10 @@ exports.getEditProductForm = async(req, res, next) => {
     return res.render("admin/edit-product", { product, pageTitle: "Edit Product", path: "/admin/edit-product" });
 }
 
-exports.editProduct = (req, res, next) => {
-    const data = req.body;
-    const { product } = Product.findByID(data.productID);
-    product.title = data.title;
-    product.imageUrl = data.imageUrl;
-    product.price = Number(data.price);
-    product.description = data.description;
-    const message = Product.update(product);
-    console.log(message);
-    res.redirect("/admin/products");
+exports.editProduct = async(req, res, next) => {
+    const { title, imageUrl, description, price, productID } = req.body;
+    await new Product(title, imageUrl, description, price).save(productID);
+    res.redirect(`/products/${productID}`);
 }
 
 exports.deleteProduct = async(req, res, next) => {
