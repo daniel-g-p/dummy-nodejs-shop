@@ -9,4 +9,6 @@ router.route("/login")
     .get(tryCatch(user.getLoginForm))
     .post(tryCatch(user.login));
 
+router.post("/logout", user.logout);
+
 module.exports = router;

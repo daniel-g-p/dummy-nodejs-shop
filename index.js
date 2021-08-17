@@ -1,11 +1,13 @@
 const express = require('express');
 const path = require('path');
 
+require("dotenv").config();
 const connectToDatabase = require("./data/database");
 const methodOverride = require("./util/method-override");
 const setUser = require("./util/setUser");
 const errorController = require('./controllers/error');
-const session = require("./util/session");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -22,7 +24,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride);
 app.use(setUser);
-app.use(session);
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.DB_ADDRESS })
+}));
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);

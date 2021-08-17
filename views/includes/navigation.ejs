@@ -27,6 +27,11 @@
                 <a class="<%= path === '/account/login' ? 'active' : '' %>" href="/account/login">Login
                 </a>
             </li>
+            <li class="main-header__item">
+                <form action="/account/logout" method="POST">
+                    <button>Login</button>
+                </form>
+            </li>
         </ul>
     </nav>
 </header>

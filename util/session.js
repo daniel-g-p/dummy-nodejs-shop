@@ -6,6 +6,5 @@ module.exports = session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true, httpOnly: true },
-    store: MongoStore.create({ mongoUrl: 'mongodb://localhost/dummy-shop' })
+    store: MongoStore.create({ mongoUrl: process.env.DB_ADDRESS })
 })

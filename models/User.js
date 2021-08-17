@@ -57,6 +57,16 @@ module.exports = class User {
             throw error
         }
     }
+    static async getIdByEmail(email) {
+        try {
+            const db = accessDatabase();
+            const query = { email: email };
+            const options = { projection: { "email": 1 } };
+            return await db.collection("users").findOne(query, options);
+        } catch (error) {
+            throw error;
+        }
+    }
     static async getAll(...fields) {
         try {
             const db = accessDatabase();
