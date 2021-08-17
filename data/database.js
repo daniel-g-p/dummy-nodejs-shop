@@ -1,9 +1,10 @@
+require("dotenv").config();
 const { MongoClient } = require("mongodb");
 
 let database;
 
 const startDatabase = async function() {
-    const client = new MongoClient("mongodb://localhost:27017");
+    const client = new MongoClient(process.env.DB_ADDRESS);
     await client.connect();
     database = await client.db("dummy-shop");
     return;

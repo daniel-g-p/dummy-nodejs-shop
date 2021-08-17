@@ -1,6 +1,5 @@
 const Product = require('../models/Product');
 const User = require("../models/User");
-// const Cart = require("../models/Cart");
 
 exports.getIndex = async(req, res, next) => {
     const products = await Product.getAll();
@@ -15,7 +14,7 @@ exports.getProducts = async(req, res, next) => {
 exports.getProduct = async(req, res, next) => {
     const { productID } = req.params;
     const product = await Product.findById(productID);
-    res.render("shop/product-detail", { product, pageTitle: product.title, path: `Product ${product._id}` });
+    return res.render("shop/product-detail", { product, pageTitle: product.title, path: `Product ${product._id}` });
 }
 
 exports.addProductToCart = async(req, res, next) => {

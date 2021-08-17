@@ -23,7 +23,9 @@ module.exports = class Product {
     static async findById(id) {
         try {
             const db = accessDatabase();
-            return await db.collection("products").findOne({ _id: new ObjectId(id) });
+            const product = await db.collection("products").findOne({ _id: new ObjectId(id) });
+            console.log(product);
+            return product;
         } catch (error) {
             throw error;
         }

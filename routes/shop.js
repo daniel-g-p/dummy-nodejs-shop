@@ -14,7 +14,7 @@ router.get("/products/:productID", tryCatch(shopController.getProduct));
 router.route('/cart')
     .get(tryCatch(shopController.getCart))
     .post(tryCatch(shopController.addProductToCart))
-    .delete(shopController.removeItemFromCart)
+    .delete(tryCatch(shopController.removeItemFromCart))
 
 // router.get('/orders', shopController.getOrders);
 
